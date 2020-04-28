@@ -1,126 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:pmdr_app/history.dart';
+import 'package:pmdr_app/home.dart';
+import 'package:pmdr_app/tags.dart';
+import 'package:pmdr_app/todo.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'testing 123',
-      theme: ThemeData(
+    return new MaterialApp(
+      title: 'PMDR',
+      theme: new ThemeData(
         primarySwatch: Colors.blueGrey,
+        canvasColor: Colors.grey[200]
       ),
-      home: HomePage(
-        title: 'App title',
-      ),
+      home: BotNavBar(),
+      
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+class BotNavBar extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _BotNavBarState createState() => _BotNavBarState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _BotNavBarState extends State<BotNavBar> {
+
+  int _currentIndex = 0;
+  final List<Widget> _children = [
+    Tags(),
+    Home(),
+    ToDo(),
+    History(),
+  ];
+
+  void onTappedBar(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[400],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          widget.title,
-          style: TextStyle(
-            fontSize: 23.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.blueGrey[700],
-          ),
-        ),
-        centerTitle: true,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  'Username',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: <Color>[
-                Colors.blueGrey[800],
-                Colors.blueGrey[300],
-              ])),
-            ),
-            CustomListTile(Icons.person, 'Profile', () {}),
-            CustomListTile(Icons.notifications, 'Notifications', () {}),
-            CustomListTile(Icons.settings, 'Settings', () {}),
-            CustomListTile(Icons.input, 'Log Out', () {}),
-          ],
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'This text is in the center',
-            ),
-          ],
-        ),
-      ),
+    return new Scaffold(
+      body: _children[_currentIndex],
+      // currentIndex: _currentIndex,
       bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 5.0,
-        child: Row(
-          children: <Widget>[
-            Spacer(),
-            IconButton(
-              tooltip: 'Tags',
-              icon: Icon(Icons.label),
-              onPressed: () {},
-              iconSize: 30.0,
-            ),
-            Spacer(flex: 2),
-            IconButton(
-              tooltip: 'Timer',
-              icon: Icon(Icons.timer),
-              onPressed: () {},
-              iconSize: 30.0,
-            ),
-            Spacer(flex: 5),
-            IconButton(
-              tooltip: 'To Do',
-              icon: Icon(Icons.check),
-              onPressed: () {},
-              iconSize: 30.0,
-            ),
-            Spacer(flex: 2),
-            IconButton(
-              tooltip: 'History',
-              icon: Icon(Icons.assignment),
-              onPressed: () {},
-              iconSize: 30.0,
-            ),
-            Spacer(),
-          ],
+        notchMargin: 2.0,
+        shape: CircularNotchedRectangle(),
+        child: SizedBox(
+          height: 60,
+          child: BottomNavigationBar(
+            onTap: onTappedBar,
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(icon: Icon(Icons.label), title: Text('Tags')),
+              BottomNavigationBarItem(icon: Icon(Icons.timer), title: Text('Countdown')),
+              BottomNavigationBarItem(icon: Icon(Icons.check), title: Text('ToDo')),
+              BottomNavigationBarItem(icon: Icon(Icons.assignment), title: Text('History')),
+            ],
+          ),
+
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        tooltip: 'Increment',
+        tooltip: 'Add Countdown',
         child: Icon(
           Icons.add,
           size: 30.0,
@@ -128,47 +75,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
-  }
-}
-
-class CustomListTile extends StatelessWidget {
-  IconData icon;
-  String text;
-  Function onTap;
-
-  CustomListTile(this.icon, this.text, this.onTap);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-      child: InkWell(
-        onTap: onTap,
-        splashColor: Colors.blueAccent,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              height: 40.0,
-              child: Row(
-                children: <Widget>[
-                  Icon(icon),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 17.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
